@@ -1,45 +1,52 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from model import Code
+from sqlalchemy.sql import text
+from session import session, session_to, row2dict
+from model import TblCode, TblCodeTo
 
-engine = create_engine('mysql+pymysql://glass:glasspasswd@infradb.inpark.kr:3380/glass')
-session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
+# def InsertOp():
+#     code = TblCode('00006', 'Base code6')
+#     session.add(code)
+#     session.commit()
+#     select()
 
+# def UpdateOp():
+#     code = session.query(TblCode).filter(TblCode.code=='00003').first()
+#     code.codename = "3333"
+#     session.commit()    
 
-def add():
-    code = Code('00003', 'Base code4')
-    session.add(code)
-    session.commit()
+# def MergeOp():
+#     code = TblCode('00005', 'code 545555')
+#     session.merge(code)
+#     session.commit()   
 
-def update():
-    code = session.query(Code).filter(Code.code=='00003').first()
-    code.codename = "3333"
-    session.commit()    
+# def DeleteOp():
+#     session.query(TblCode).filter(TblCode.code=='00001').delete()
+#     session.commit()
 
-def merge():
-    code = Code('00005', 'code 545555')
-    session.merge(code)
-    session.commit()   
-
-def delete():
-    session.query(Code).filter(Code.code=='00001').delete()
-    session.commit()
-
-def select():
+def SelectOp():
     # rs = session.query(Code).filter(Code.code.op('regexp')('0000.*'))
     # rs = session.query(Code).filter(Code.code=='00005')
-    rs = session.query(Code).filter(Code.code.like('0000%'))
+    rs = session.query(TblCode).from_statement(text("""
+        select * from tblCode
+    """))
+    return rs
+
+def Manip(data):
+    # data['Etc'] = "pass-"
+    pass
+
+def EtlOp(SelectOp, Manip, TargetTable):
+    rs = SelectOp()
     for r in rs:
-        print(r.code, r.codename)
+        data = row2dict(r)
+        Manip(data)
+        newdata = TargetTable(**data)
+        session_to.merge(newdata);
+        print(data)
+    session_to.commit()
 
 def main():
-    select()
+    EtlOp(SelectOp, Manip, TblCodeTo)
     
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        print(e)
-
-
+    main()
     
