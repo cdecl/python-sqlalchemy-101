@@ -1,8 +1,4 @@
-# python-sqlalchemy-101
 
-```sh
-$ sqlacodegen mysql+pymysql://dev:$DB_PASSWD@localhost:3380/glass
-# coding: utf-8
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -30,4 +26,3 @@ class CustomerTo(Base):
     MobileNo = Column(String(100))
     Email = Column(String(255))
     BOD = Column(String(255))
-```
