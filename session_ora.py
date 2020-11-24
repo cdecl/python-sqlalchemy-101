@@ -9,6 +9,9 @@ dsn = cx_Oracle.makedsn('localhost', 1521, "xe")
 engine = create_engine('oracle+cx_oracle://system:oracle@{}'.format(dsn))
 session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 
+engine_to = create_engine('oracle+cx_oracle://system:oracle@{}'.format(dsn))
+session_to = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine_to))
+
 row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
 
 def SelectOp(table, query):
@@ -21,6 +24,6 @@ def EtlOp(rs, Manip, targetTbl):
         if Manip:
             Manip(data)
         newdata = targetTbl(**data)
-        session.merge(newdata);
+        session_to.merge(newdata);
         print(data)
-    session.commit()
+    session_to.commit()
