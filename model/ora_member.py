@@ -1,5 +1,6 @@
 # coding: utf-8
-from sqlalchemy import Column, Integer, VARCHAR, text
+from sqlalchemy import Column, DateTime, Integer, VARCHAR, text
+from sqlalchemy.dialects.oracle import NUMBER
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -27,3 +28,20 @@ class CustomerTo(Base):
     email = Column(VARCHAR(255), server_default=text("NULL"))
     bod = Column(VARCHAR(255), server_default=text("NULL"))
 
+
+
+class TestNull(Base):
+    __tablename__ = 'test_null'
+
+    id = Column(Integer, primary_key=True)
+    etc = Column(VARCHAR(64))
+    num = Column(NUMBER(asdecimal=False))
+    dt = Column(DateTime)
+
+class TestNullTo(Base):
+    __tablename__ = 'test_null_to'
+
+    id = Column(Integer, primary_key=True)
+    etc = Column(VARCHAR(64))
+    num = Column(NUMBER(asdecimal=False))
+    dt = Column(DateTime)

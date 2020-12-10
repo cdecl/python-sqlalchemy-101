@@ -10,7 +10,7 @@ session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=en
 engine_to = create_engine('mysql+pymysql://dev:{}@localhost:3380/glass'.format(os.getenv("DB_PASSWD")))
 session_to = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine_to))
 
-row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
+row2dict = lambda r: {c.name: getattr(r, c.name) for c in r.__table__.columns}
 
 def SelectOp(table, query):
 	rs = session.query(table).from_statement(text(query))
